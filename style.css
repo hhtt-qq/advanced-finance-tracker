@@ -549,3 +549,28 @@ body.theme-light .bg-gradient {
     text-align: left;
   }
 }
+
+.trend {
+  margin-top: 24px;
+}
+
+.trend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.trend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.trend-item strong {
+  color: #f97316;
+}

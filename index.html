@@ -63,6 +63,17 @@
         <canvas id="financeChart" width="800" height="260"></canvas>
       </section>
 
+      <section class="card trend">
+        <div class="transactions__header">
+          <h3 class="section-title">Monthly Expense Trend</h3>
+          <p class="transactions__meta">Expense by month</p>
+        </div>
+
+        <div class="trend-list" id="monthlyTrendContainer">
+         <p>No expense trend data available.</p>
+      </div>
+      </section>
+
       <section class="grid">
         <div class="card form">
           <h3 class="section-title">Add Transaction</h3>
@@ -211,6 +222,6 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

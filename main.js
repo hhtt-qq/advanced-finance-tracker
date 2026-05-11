@@ -1,5 +1,12 @@
 "use strict";
 
+import {
+  escapeHTML,
+  formatCurrency,
+  formatDate,
+  groupByMonth,
+} from "./utils.js";
+
 const STORAGE_KEY = "financeTrackerData";
 const THEME_KEY = "financeTrackerTheme";
 
@@ -39,6 +46,7 @@ const dom = {
   totalIncome: document.getElementById("totalIncome"),
   totalExpenses: document.getElementById("totalExpenses"),
   financeChart: document.getElementById("financeChart"),
+  monthlyTrendContainer: document.getElementById("monthlyTrendContainer"),
   confirmModal: document.getElementById("confirmModal"),
   confirmDeleteBtn: document.getElementById("confirmDeleteBtn"),
   cancelDeleteBtn: document.getElementById("cancelDeleteBtn"),
@@ -54,9 +62,52 @@ const saveToLocalStorage = () => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.transactions));
 };
 
+const isValidTransaction = (tx) => {
+  return (
+    tx &&
+    typeof tx.id === "string" &&
+    typeof tx.title === "string" &&
+    typeof tx.amount === "number" &&
+    Number.isFinite(tx.amount) &&
+    typeof tx.category === "string" &&
+    typeof tx.date === "string"
+  );
+};
 const loadFromLocalStorage = () => {
   const stored = localStorage.getItem(STORAGE_KEY);
-  state.transactions = stored ? JSON.parse(stored) : [];
+
+  if (!stored) {
+    state.transactions = [];
+    return;
+  }
+  try {
+    const parsed = JSON.parse(stored);
+
+    if (!Array.isArray(parsed)) {
+      throw new Error("Stored finance data is not an array.");
+    }
+    const validTransactions = parsed.filter(isValidTransaction);
+    if (validTransactions.length !== parsed.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(validTransactions));
+      console.warn("Some invalid transactions were removed during recovery.");
+    }
+    state.transactions = validTransactions;
+  } catch (error) {
+    console.error("Failed to load finance data from LocalStorage:", error);
+
+    const backupKey = `${STORAGE_KEY}_corrupted_${Date.now()}`;
+    localStorage.setItem(backupKey, stored);
+    localStorage.removeItem(STORAGE_KEY);
+
+    state.transactions = [];
+
+    setTimeout(() => {
+      showToast(
+        "Saved finance data was corrupted. A backup was created and the app has recovered safely.",
+        "error",
+      );
+    }, 0);
+  }
 };
 
 const saveTheme = () => {
@@ -270,16 +321,16 @@ const renderTransactionItem = (tx) => {
   return `
     <div class="transaction">
       <div>
-        <p class="transaction__title">${tx.title}</p>
+        <p class="transaction__title">${escapeHTML(tx.title)}</p>
         <div class="transaction__meta">
-          <span class="badge">${tx.category}</span>
-          <span>${formattedDate}</span>
+          <span class="badge">${escapeHTML(tx.category)}</span>
+          <span>${escapeHTML(formattedDate)}</span>
         </div>
       </div>
       <div>
-        <p class="amount ${typeClass}">${formattedAmount}</p>
-        <button class="edit-btn" data-id="${tx.id}">Edit</button>
-        <button class="delete-btn" data-id="${tx.id}">Delete</button>
+        <p class="amount ${typeClass}">${escapeHTML(formattedAmount)}</p>
+        <button class="edit-btn" data-id="${escapeHTML(tx.id)}">Edit</button>
+        <button class="delete-btn" data-id="${escapeHTML(tx.id)}">Delete</button>
       </div>
     </div>
   `;
@@ -302,46 +353,7 @@ const filterTransactions = () => {
   });
 };
 
-const groupByMonth = (transactions) => {
-  const sorted = [...transactions].sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
 
-  const groups = [];
-  const lookup = new Map();
-
-  sorted.forEach((tx) => {
-    const label = new Date(tx.date).toLocaleDateString("en-US", {
-      month: "long",
-      year: "numeric",
-    });
-
-    if (!lookup.has(label)) {
-      lookup.set(label, { label, items: [] });
-      groups.push(lookup.get(label));
-    }
-
-    lookup.get(label).items.push(tx);
-  });
-
-  return groups;
-};
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
-};
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
 
 const renderChart = () => {
   const canvas = dom.financeChart;
@@ -406,10 +418,46 @@ const renderChart = () => {
   );
 };
 
+const renderMonthlyTrend = () => {
+  const monthlyExpenses = {};
+
+  state.transactions.forEach((tx) => {
+    if (tx.amount < 0) {
+      const month = new Date(tx.date).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+
+      monthlyExpenses[month] =
+        (monthlyExpenses[month] || 0) + Math.abs(tx.amount);
+    }
+  });
+
+  const entries = Object.entries(monthlyExpenses);
+
+  if (entries.length === 0) {
+    dom.monthlyTrendContainer.innerHTML =
+      "<p>No expense trend data available.</p>";
+    return;
+  }
+
+  dom.monthlyTrendContainer.innerHTML = entries
+    .map(
+      ([month, total]) => `
+        <div class="trend-item">
+          <span>${month}</span>
+          <strong>${formatCurrency(total)}</strong>
+        </div>
+      `,
+    )
+    .join("");
+};
+
 const renderApp = () => {
   renderSummary();
   renderTransactions();
   renderChart();
+  renderMonthlyTrend();
 };
 
 const exportToCSV = () => {
