@@ -11,4 +11,4 @@
 - Weak input validation (potential XSS risk)
 - No Cookie Banner or Privacy Policy yet
 
-This PR documents Xu Yu's contributions and starts the fixes.
+**This PR documents Xu Yu's contributions and starts the fixes.**
