@@ -11,4 +11,4 @@
 - Missing ARIA labels, keyboard navigation, non-accessible canvas chart
 - All UI strings are hard-coded (no i18n preparation)
 
-This PR documents Xu Chenrui's contributions and starts the fixes.
+**This PR documents Xu Chenrui's contributions and starts the fixes.**
