@@ -7,4 +7,4 @@
 - No preparation for internationalization (i18n)
 - No test coverage yet
 
-**This PR starts the fix for Deficiency 3 and lays foundation for Test Coverage (Qin Qing - 50% + 40%)**
+**This PR starts the fix for Deficiency 3 and lays foundation for Test Coverage (Qin Qing - 25% + 25%)**
