@@ -1,10 +1,10 @@
 # Comprehensive Contributions - Huang Shengtian
 
 **Contributions (Huang Shengtian):**
-- Deficiency 1: Insufficient Accessibility (40%)
-- Deficiency 2: Inadequate error handling and user feedback (50%)
-- Baseline Standard 1: Live Uptime (50%)
-- Baseline Standard 3: Accessibility (35%)
+- Deficiency 1: Insufficient Accessibility (25%)
+- Deficiency 2: Inadequate error handling and user feedback (25%)
+- Baseline Standard 1: Live Uptime (25%)
+- Baseline Standard 3: Accessibility (25%)
 
 **Issues found**:
 - Missing ARIA labels, poor keyboard navigation, non-accessible Canvas chart
