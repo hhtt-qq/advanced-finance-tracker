@@ -1,10 +1,10 @@
 # Deficiency 2 & 4 + i18n & Legal Compliance - Xu Yu Contributions
 
 **Contributions (Xu Yu):**
-- Deficiency 2: Inadequate error handling and user feedback (50%)
-- Deficiency 4: Lack of input validation and sanitization (32%)
-- Baseline 4: i18n (45%)
-- Baseline 5: Legal Compliance (40%)
+- Deficiency 2: Inadequate error handling and user feedback (25%)
+- Deficiency 4: Lack of input validation and sanitization (25%)
+- Baseline 4: i18n (25%)
+- Baseline 5: Legal Compliance (25%)
 
 **Issues found**:
 - No proper error handling for LocalStorage / async operations
