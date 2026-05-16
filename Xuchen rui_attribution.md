@@ -3,9 +3,9 @@
 **Detected by**: axe DevTools + Manual code inspection
 
 **Contributions (Xu Chenrui):**
-- Deficiency 1: Insufficient Accessibility (32%)
-- Deficiency 3: Hard-coded strings without i18n (50%)
-- Baseline Standard 3: Accessibility (30%)
+- Deficiency 1: Insufficient Accessibility (25%)
+- Deficiency 3: Hard-coded strings without i18n (25%)
+- Baseline Standard 3: Accessibility (25%)
 
 **Issues found**:
 - Missing ARIA labels, keyboard navigation, non-accessible canvas chart
